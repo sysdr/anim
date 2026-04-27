@@ -41,10 +41,33 @@ Start the web dashboard to generate and browse videos from a browser:
 # Or: python -m anim.web.run
 ```
 
+## Dashboard
+
+Start the web dashboard to generate and browse videos from a browser:
+
+```bash
+./start.sh
+# Or: python -m anim.web.run
+```
+
 Open **http://localhost:8000** in your browser.
 
-- **Generate** — Enter a topic, URL, or paste text to create a video
-- **Rendered Videos** — List and download completed videos
+- **Studio (React)** — The landing page is **Studio**: pick a topic from the [System Design Roadmap](https://systemdr.substack.com/) or type your own; generate SVG + voiceover. Built with React + TypeScript (see `frontend/`).
+- **Dashboard** — At **http://localhost:8000/dashboard**: topic selector, quick generate, jobs, and rendered videos.
+
+### Running the React frontend (Studio)
+
+- **Option A — Dev:** Run the React app with hot reload and proxy to the API:
+  ```bash
+  cd frontend && npm install && npm run dev
+  ```
+  Open **http://localhost:5173**. The backend must be running on port 8000 (`./start.sh` or `python -m anim.web.run`).
+
+- **Option B — Production:** Build the frontend and serve from the backend:
+  ```bash
+  cd frontend && npm install && npm run build
+  ```
+  Then start the backend as usual. **http://localhost:8000** will serve the React Studio app. Use **http://localhost:8000/dashboard** for the classic dashboard (topics, jobs, videos).
 
 **Dependencies:** Manim requires FFmpeg and system libraries (Cairo, Pango). On macOS:
 

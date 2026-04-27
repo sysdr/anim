@@ -1,0 +1,212 @@
+{
+  "version": "1.0",
+  "title": "Ultra-Scalable Event Pipeline: From Ingestion to Delivery",
+  "metadata": {
+    "source": "complex_workflow_demo",
+    "estimated_duration_seconds": 52,
+    "design": "cinematic_movie_style",
+    "entity_metaphor_global": "factory_and_warehouse"
+  },
+  "entity_metaphor": "factory_and_warehouse",
+  "global_style": {
+    "theme": "dark",
+    "background_color": "#1a1a2e",
+    "accent_color": "#2563EB",
+    "font_family": "sans-serif",
+    "text_color": "#ffffff"
+  },
+  "acts": [
+    {
+      "id": "act-1",
+      "title": "Establishing",
+      "summary": "Wide view of the full pipeline: ingestion, queue, workers, storage, delivery.",
+      "narrative_beat": "establishing",
+      "scene_ids": ["s1", "s2"]
+    },
+    {
+      "id": "act-2",
+      "title": "Ingestion & Queue",
+      "summary": "Events flow in via multiple streams; queue buffers and fans out.",
+      "narrative_beat": "build",
+      "scene_ids": ["s3", "s4"]
+    },
+    {
+      "id": "act-3",
+      "title": "Processing at Scale",
+      "summary": "Replicated workers consume from the queue; cache layer reduces load.",
+      "narrative_beat": "scale",
+      "scene_ids": ["s5", "s6"]
+    },
+    {
+      "id": "act-4",
+      "title": "Storage & Delivery",
+      "summary": "Results land in warehouses; delivery tier fans out to consumers.",
+      "narrative_beat": "resolution",
+      "scene_ids": ["s7", "s8"]
+    }
+  ],
+  "workflow_parts": [
+    {
+      "id": "part-ingestion",
+      "name": "Ingestion",
+      "description": "Multiple event streams enter the system (APIs, logs, IoT).",
+      "responsibility": "Accept, validate, and route incoming events.",
+      "scale_hint": "fan-out",
+      "scene_ids": ["s3"]
+    },
+    {
+      "id": "part-queue",
+      "name": "Queue",
+      "description": "Durable buffer between producers and workers.",
+      "responsibility": "Decouple ingestion from processing; backpressure.",
+      "scale_hint": "sharded",
+      "scene_ids": ["s4"]
+    },
+    {
+      "id": "part-workers",
+      "name": "Workers",
+      "description": "Stateless processors that transform and enrich events.",
+      "responsibility": "Process events in parallel; scale horizontally.",
+      "scale_hint": "replicated",
+      "scene_ids": ["s5"]
+    },
+    {
+      "id": "part-cache",
+      "name": "Cache",
+      "description": "Hot data layer to avoid repeated heavy lookups.",
+      "responsibility": "Reduce latency and load on storage.",
+      "scale_hint": "replicated",
+      "scene_ids": ["s6"]
+    },
+    {
+      "id": "part-storage",
+      "name": "Storage",
+      "description": "Durable warehouses for processed results.",
+      "responsibility": "Persist and index for query and replay.",
+      "scale_hint": "sharded",
+      "scene_ids": ["s7"]
+    },
+    {
+      "id": "part-delivery",
+      "name": "Delivery",
+      "description": "Fan-out to subscribers, webhooks, and downstream systems.",
+      "responsibility": "Reliable delivery with retries and DLQ.",
+      "scale_hint": "fan-out",
+      "scene_ids": ["s8"]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "s1",
+      "scene_type": "title",
+      "duration_seconds": 5,
+      "act_id": "act-1",
+      "camera_move": "establishing",
+      "entity_metaphor": "factory_and_warehouse",
+      "elements": [{"content": "Ultra-Scalable Event Pipeline", "duration_seconds": 5}],
+      "narration": "From ingestion to delivery: a pipeline built to scale."
+    },
+    {
+      "id": "s2",
+      "scene_type": "flow",
+      "duration_seconds": 6,
+      "act_id": "act-1",
+      "camera_move": "reveal",
+      "entity_metaphor": "pipeline",
+      "nodes": [
+        {"id": "ingestion", "label": "Ingestion"},
+        {"id": "queue", "label": "Queue"},
+        {"id": "workers", "label": "Workers"},
+        {"id": "cache", "label": "Cache"},
+        {"id": "storage", "label": "Storage"},
+        {"id": "delivery", "label": "Delivery"}
+      ],
+      "edges": [
+        {"source": "ingestion", "target": "queue"},
+        {"source": "queue", "target": "workers"},
+        {"source": "workers", "target": "cache"},
+        {"source": "workers", "target": "storage"},
+        {"source": "storage", "target": "delivery"}
+      ],
+      "narration": "Six distinct parts: ingestion, queue, workers, cache, storage, and delivery."
+    },
+    {
+      "id": "s3",
+      "scene_type": "bullets",
+      "duration_seconds": 6,
+      "act_id": "act-2",
+      "entity_metaphor": "conveyor",
+      "elements": [
+        {"content": "Events arrive via APIs, logs, and IoT streams", "duration_seconds": 2},
+        {"content": "Validation and routing at the edge", "duration_seconds": 2},
+        {"content": "Fan-out: one stream becomes many partitions", "duration_seconds": 2}
+      ],
+      "narration": "Ingestion: events flow in from many sources and are fanned out to partitions."
+    },
+    {
+      "id": "s4",
+      "scene_type": "flow",
+      "duration_seconds": 5,
+      "act_id": "act-2",
+      "entity_metaphor": "pipeline",
+      "nodes": [
+        {"id": "Q1", "label": "Queue Shard 1"},
+        {"id": "Q2", "label": "Queue Shard 2"},
+        {"id": "Q3", "label": "Queue Shard 3"}
+      ],
+      "edges": [
+        {"source": "Q1", "target": "Q2"},
+        {"source": "Q2", "target": "Q3"}
+      ],
+      "narration": "The queue is sharded for throughput and isolation."
+    },
+    {
+      "id": "s5",
+      "scene_type": "bullets",
+      "duration_seconds": 7,
+      "act_id": "act-3",
+      "entity_metaphor": "server_rack",
+      "elements": [
+        {"content": "Replicated workers pull from the queue", "duration_seconds": 2},
+        {"content": "Stateless: scale horizontally on demand", "duration_seconds": 2},
+        {"content": "Each worker enriches and transforms events", "duration_seconds": 2}
+      ],
+      "narration": "Workers are replicated: add more nodes to process more events."
+    },
+    {
+      "id": "s6",
+      "scene_type": "text",
+      "duration_seconds": 5,
+      "act_id": "act-3",
+      "entity_metaphor": "warehouse",
+      "elements": [{"content": "Cache layer: hot data in memory; cold in storage.", "duration_seconds": 5}],
+      "narration": "A cache layer keeps hot data close and reduces load on storage."
+    },
+    {
+      "id": "s7",
+      "scene_type": "flow",
+      "duration_seconds": 6,
+      "act_id": "act-4",
+      "entity_metaphor": "warehouse",
+      "nodes": [
+        {"id": "S1", "label": "Storage Shard 1"},
+        {"id": "S2", "label": "Storage Shard 2"},
+        {"id": "DLV", "label": "Delivery"}
+      ],
+      "edges": [
+        {"source": "S1", "target": "DLV"},
+        {"source": "S2", "target": "DLV"}
+      ],
+      "narration": "Storage is sharded; delivery fans out to subscribers and webhooks."
+    },
+    {
+      "id": "s8",
+      "scene_type": "text",
+      "duration_seconds": 6,
+      "act_id": "act-4",
+      "entity_metaphor": "pipeline",
+      "elements": [{"content": "Ultra-scalable: every part can scale independently. Ingestion fans in, queue shards, workers replicate, cache replicates, storage shards, delivery fans out.", "duration_seconds": 6}],
+      "narration": "Every part scales independently: that is what makes this pipeline ultra-scalable."
+    }
+  ]
+}

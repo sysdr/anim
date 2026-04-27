@@ -1,0 +1,542 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · SynapseFlow 2026{% endblock %}
+{% block extra_css %}
+<style>
+  .dash-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.25rem 3rem;
+  }
+  .dash-hero {
+    text-align: center;
+    padding: 2.5rem 0 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .dash-hero h1 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text) 0%, var(--muted) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .dash-hero p {
+    color: var(--muted);
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    margin: 0 0 1rem;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .dash-hero .source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .dash-hero .source-link:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+  .dash-hero .source-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .topic-select-card {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 2rem;
+    max-width: 640px;
+  }
+  .topic-select-card .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .topic-select-card h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+  }
+  .topic-select-card .source-link-small {
+    font-size: 0.85rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .topic-select-card .source-link-small:hover { text-decoration: underline; }
+  .topic-select-card label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .topic-select-card select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    appearance: auto;
+  }
+  .topic-select-card select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+  }
+  .topic-select-card .desc-wrap { margin-top: 1.25rem; }
+  .topic-select-card textarea.desc-input {
+    width: 100%;
+    min-height: 100px;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text);
+    font-size: 0.95rem;
+    resize: vertical;
+    font-family: inherit;
+  }
+  .topic-select-card textarea.desc-input::placeholder { color: var(--muted); }
+  .topic-select-card textarea.desc-input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .topic-result {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .topic-result.empty { display: none; }
+  .topic-result .result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .topic-result .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s, background 0.2s;
+  }
+  .topic-result .btn-primary { background: var(--primary); color: white; }
+  .topic-result .btn-primary:hover { opacity: 0.92; }
+  .topic-result .btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .topic-result .btn-secondary:hover { background: rgba(255, 255, 255, 0.12); }
+  .topic-result .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .topic-result .result-hint { font-size: 0.85rem; color: var(--muted); margin-top: 0.5rem; }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .quick-gen {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 2rem;
+  }
+  .quick-gen h2 { font-size: 1rem; margin: 0 0 1rem; color: var(--muted); font-weight: 500; }
+  .quick-gen form { display: flex; flex-direction: column; gap: 0.75rem; }
+  .quick-gen label { font-size: 0.85rem; color: var(--muted); display: block; }
+  .quick-gen textarea,
+  .quick-gen input[type="text"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .quick-gen textarea { min-height: 80px; resize: vertical; }
+  .quick-gen button[type="submit"] {
+    align-self: flex-start;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .quick-gen button[type="submit"]:hover { opacity: 0.92; }
+
+  .jobs-card {
+    display: none;
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .jobs-card.visible { display: block; }
+  .jobs-card h2 { font-size: 1rem; margin: 0 0 1rem; color: var(--muted); font-weight: 500; }
+  #jobsList .job-block { padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 0.5rem; }
+  #jobsList .status { font-size: 0.85rem; padding: 0.25rem 0.5rem; border-radius: 4px; }
+  #jobsList .status.done { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+  #jobsList .status.running { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+  #jobsList .status.error { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+  .all-videos {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .all-videos ul { list-style: none; padding: 0; margin: 0; }
+  .all-videos .video-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  .all-videos .video-item a { color: var(--primary); text-decoration: none; font-weight: 500; }
+  .all-videos .video-item .meta { font-size: 0.85rem; color: var(--muted); }
+  .all-videos .video-item .actions { display: flex; gap: 0.5rem; align-items: center; }
+  .all-videos .video-item .actions button,
+  .all-videos .video-item .actions a {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .all-videos .video-item .actions a.dl { color: var(--primary); }
+  .all-videos .empty { color: var(--muted); font-style: italic; padding: 1rem 0; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal-overlay .modal-box {
+    background: var(--surface);
+    border-radius: 14px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .modal-overlay .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .modal-overlay .modal-body { padding: 1rem 1.25rem; }
+  .modal-overlay video { width: 100%; max-height: 75vh; border-radius: 8px; background: #000; display: block; }
+  .modal-overlay .modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 0.25rem;
+  }
+  .modal-overlay .modal-close:hover { color: var(--text); }
+
+  @media (min-width: 640px) {
+    .dash-wrap { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="dash-wrap">
+  <header class="dash-hero">
+    <h1>System Design Animations</h1>
+    <p>Pick a topic from the roadmap. Watch an existing animation or create one in the Studio.</p>
+    <a href="https://systemdr.substack.com/" target="_blank" rel="noopener noreferrer" class="source-link" aria-label="System Design Interview Roadmap on Substack">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+      System Design Interview Roadmap · Substack
+    </a>
+  </header>
+
+  <section class="topic-select-section" aria-labelledby="topic-select-heading">
+    <div class="topic-select-card">
+      <div class="card-head">
+        <h2 id="topic-select-heading">Select topic</h2>
+        <a href="https://systemdr.substack.com/" target="_blank" rel="noopener noreferrer" class="source-link-small">System Design Interview Roadmap · Substack</a>
+      </div>
+      <label for="topicSelect">Topic (from System Design Interview Roadmap)</label>
+      <select id="topicSelect" name="topic" aria-describedby="topicDescHint">
+        <option value="">— Choose a topic —</option>
+        {% for t in topics_with_videos %}
+        <option value="{{ t.slug }}" data-title="{{ t.title }}" data-studio-url="{{ t.studio_url }}" data-post-url="{{ t.url or '' }}" data-has-video="{{ '1' if t.video else '' }}" data-video-path="{{ t.video.path if t.video else '' }}" data-video-name="{{ t.video.name if t.video else '' }}">{{ t.title }}</option>
+        {% endfor %}
+      </select>
+      <div class="desc-wrap">
+        <label for="topicDescription">Optional description</label>
+        <textarea id="topicDescription" class="desc-input" name="description" placeholder="Add details, constraints, or focus area for this topic (e.g. “Focus on read path and caching” or “Include OAuth flow”)" aria-describedby="topicDescHint"></textarea>
+        <p id="topicDescHint" class="result-hint">Description is passed to Studio when you generate an animation.</p>
+      </div>
+      <div class="topic-result empty" id="topicResult">
+        <div class="result-actions" id="topicResultActions"></div>
+        <p class="result-hint" id="topicResultHint"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="quick-gen" aria-labelledby="quick-gen-heading">
+    <h2 id="quick-gen-heading">Quick Generate</h2>
+    <p style="color:var(--muted);font-size:0.85rem;margin:0 0 0.75rem">Topic, URL, or paste text → blueprint-driven video</p>
+    <form id="genForm">
+      <label class="label">Topic, URL, or paste text</label>
+      <textarea name="source" placeholder="e.g. How do lithium batteries work? or https://example.com/article" required></textarea>
+      <label class="label">Output filename (optional)</label>
+      <input type="text" name="output_name" placeholder="output" value="generated" />
+      <button type="submit" id="submitBtn">Generate</button>
+    </form>
+  </section>
+
+  <div class="jobs-card" id="jobsCard">
+    <h2>Generation Status</h2>
+    <div id="jobsList"></div>
+  </div>
+
+  <section class="all-videos" aria-labelledby="videos-heading">
+    <h2 id="videos-heading" class="section-title">All Rendered Videos</h2>
+    <ul class="videos">
+      {% for v in videos %}
+      <li class="video-item">
+        <span>
+          <a href="{{ v.path }}" target="_blank" rel="noopener">{{ v.name }}</a>
+          <span class="meta"> · {{ v.size_mb }} MB</span>
+        </span>
+        <span class="actions">
+          <button type="button" class="secondary btn-preview" data-path="{{ v.path }}" data-title="{{ v.name }}">Preview</button>
+          <a href="{{ v.path }}" download class="dl">Download</a>
+        </span>
+      </li>
+      {% else %}
+      <li class="empty">No videos yet. Generate one above or use Studio for a topic.</li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+
+<div class="modal-overlay" id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span id="previewTitle">Preview</span>
+      <button type="button" class="modal-close" onclick="closePreview()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <video id="previewVideo" controls playsinline></video>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var form = document.getElementById('genForm');
+  var submitBtn = document.getElementById('submitBtn');
+  var jobsCard = document.getElementById('jobsCard');
+  var jobsList = document.getElementById('jobsList');
+
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      var formData = new FormData(form);
+      try {
+        var r = await fetch('/generate', { method: 'POST', body: formData });
+        var d = await r.json();
+        if (d.job_id) {
+          jobsCard.classList.add('visible');
+          jobsList.innerHTML = '';
+          pollJob(d.job_id);
+        }
+      } catch (err) { console.error(err); }
+      submitBtn.disabled = false;
+    });
+  }
+
+  function pollJob(id) {
+    fetch('/jobs/' + id).then(function(r) { return r.json(); }).then(function(j) {
+      var el = document.getElementById('job-' + id);
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'job-' + id;
+        el.className = 'job-block';
+        jobsList.appendChild(el);
+      }
+      el.innerHTML = renderJob(j);
+      el.querySelectorAll('.btn-preview').forEach(function(btn) {
+        btn.addEventListener('click', function() { openPreview(btn.getAttribute('data-path'), btn.getAttribute('data-title')); });
+      });
+      if (j.status === 'running') setTimeout(function() { pollJob(id); }, 2000);
+      else if (j.status === 'done') setTimeout(function() { location.reload(); }, 1500);
+    });
+  }
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function renderJob(j) {
+    var html = '<div class="video-item"><span>' + escapeHtml(j.source || j.id) + '</span><span class="status ' + (j.status || '') + '">' + (j.status || '') + '</span></div>';
+    if (j.workflow && j.workflow.length) {
+      html += '<div style="margin-top:0.75rem"><strong style="font-size:0.85rem;color:var(--muted)">Workflow</strong>';
+      j.workflow.forEach(function(s) {
+        var content = (s.content || []).map(function(c) { return escapeHtml(c); }).join('<br>');
+        html += '<div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="width:24px;height:24px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem">' + s.index + '</span><span style="padding:0.2rem 0.5rem;background:rgba(59,130,246,0.2);border-radius:4px;font-size:0.75rem">' + (s.type || '') + '</span><div style="color:var(--muted);font-size:0.85rem">' + (content || '—') + '</div></div>';
+      });
+      html += '</div>';
+    }
+    if (j.status === 'done' && j.path) {
+      html += '<div style="margin-top:0.75rem"><button type="button" class="secondary btn-preview" data-path="' + escapeHtml(j.path) + '" data-title="' + escapeHtml(j.output_name || 'video') + '">Preview</button> <a href="' + escapeHtml(j.path) + '" download>Download</a></div>';
+    }
+    if (j.status === 'error') html += '<div style="color:#f87171;margin-top:0.5rem">' + escapeHtml(j.error || 'Unknown error') + '</div>';
+    return html;
+  }
+
+  window.openPreview = function(path, title) {
+    document.getElementById('previewTitle').textContent = title || 'Preview';
+    var video = document.getElementById('previewVideo');
+    video.src = path;
+    video.load();
+    document.getElementById('previewModal').classList.add('visible');
+  };
+
+  window.closePreview = function() {
+    document.getElementById('previewModal').classList.remove('visible');
+    var v = document.getElementById('previewVideo');
+    v.pause();
+    v.src = '';
+  };
+
+  document.getElementById('previewModal').addEventListener('click', function(e) {
+    if (e.target.id === 'previewModal') closePreview();
+  });
+
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn-preview');
+    if (btn) openPreview(btn.getAttribute('data-path'), btn.getAttribute('data-title'));
+  });
+
+  // Topic list box: update result area when topic or description changes
+  var topicSelect = document.getElementById('topicSelect');
+  var topicDescription = document.getElementById('topicDescription');
+  var topicResult = document.getElementById('topicResult');
+  var topicResultActions = document.getElementById('topicResultActions');
+  var topicResultHint = document.getElementById('topicResultHint');
+
+  function getSelectedTopicData() {
+    if (!topicSelect || topicSelect.selectedIndex <= 0) return null;
+    var opt = topicSelect.options[topicSelect.selectedIndex];
+    return {
+      slug: opt.value,
+      title: opt.getAttribute('data-title') || opt.text,
+      studioUrl: opt.getAttribute('data-studio-url') || '',
+      postUrl: opt.getAttribute('data-post-url') || '',
+      hasVideo: opt.getAttribute('data-has-video') === '1',
+      videoPath: opt.getAttribute('data-video-path') || '',
+      videoName: opt.getAttribute('data-video-name') || ''
+    };
+  }
+
+  function buildStudioConcept() {
+    var data = getSelectedTopicData();
+    if (!data) return '';
+    var desc = (topicDescription && topicDescription.value) ? topicDescription.value.trim() : '';
+    return desc ? data.title + '\n\n' + desc : data.title;
+  }
+
+  function updateTopicResult() {
+    var data = getSelectedTopicData();
+    if (!data) {
+      topicResult.classList.add('empty');
+      topicResultActions.innerHTML = '';
+      topicResultHint.textContent = '';
+      return;
+    }
+    topicResult.classList.remove('empty');
+    var readLink = data.postUrl ? ' <a href="' + escapeHtml(data.postUrl) + '" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Read on Substack</a>' : '';
+    if (data.hasVideo) {
+      topicResultActions.innerHTML =
+        '<button type="button" class="btn btn-primary btn-preview" data-path="' + escapeHtml(data.videoPath) + '" data-title="' + escapeHtml(data.title) + '">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Play</button>' +
+        '<a href="' + escapeHtml(data.videoPath) + '" download class="btn btn-secondary">Download</a>' + readLink;
+      topicResultHint.textContent = 'Animation exists for this topic.';
+    } else {
+      var concept = buildStudioConcept();
+      var studioUrl = concept ? '/studio?concept=' + encodeURIComponent(concept) : data.studioUrl;
+      topicResultActions.innerHTML =
+        '<a href="' + escapeHtml(studioUrl) + '" class="btn btn-primary" id="topicStudioLink">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg> Generate in Studio</a>' + readLink;
+      topicResultHint.textContent = 'No animation yet. Add an optional description above and open Studio to create one.';
+    }
+  }
+
+  if (topicSelect) {
+    topicSelect.addEventListener('change', updateTopicResult);
+  }
+  if (topicDescription) {
+    topicDescription.addEventListener('input', function() {
+      if (!getSelectedTopicData()) return;
+      var data = getSelectedTopicData();
+      if (data.hasVideo) return;
+      var link = document.getElementById('topicStudioLink');
+      if (link) {
+        var concept = buildStudioConcept();
+        link.href = concept ? '/studio?concept=' + encodeURIComponent(concept) : data.studioUrl;
+      }
+    });
+  }
+  updateTopicResult();
+})();
+</script>
+{% endblock %}

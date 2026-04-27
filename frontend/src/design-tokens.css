@@ -1,0 +1,97 @@
+/* Design tokens — Google Analytics–style (light main, dark sidebar, Material) */
+:root {
+  /* Spacing (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+
+  /* Typography */
+  --font-ui: 'Roboto', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Roboto Mono', 'Consolas', monospace;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --line-height-tight: 1.35;
+  --line-height-normal: 1.5;
+
+  /* Motion */
+  --motion-short: 150ms;
+  --motion-medium: 250ms;
+  --motion-long: 400ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 2px rgba(60, 64, 67, 0.06);
+  --shadow-2: 0 2px 8px rgba(60, 64, 67, 0.08);
+  --shadow-3: 0 4px 16px rgba(60, 64, 67, 0.1);
+
+  /* Google Analytics palette — main (light), default background pure white */
+  --ga-main-bg: #ffffff;
+  --ga-main-text: #202124;
+  --ga-main-text-secondary: #5f6368;
+  --ga-main-border: rgba(0, 0, 0, 0.08);
+  --ga-primary: #1a73e8;
+  --ga-primary-hover: #1765cc;
+  --ga-primary-bg: rgba(26, 115, 232, 0.08);
+
+  /* Sidebar (dark grey) */
+  --ga-sidebar-bg: #2d2d2d;
+  --ga-sidebar-text: #fff;
+  --ga-sidebar-text-secondary: rgba(255, 255, 255, 0.7);
+  --ga-sidebar-active-bg: #1a73e8;
+  --ga-sidebar-hover: rgba(255, 255, 255, 0.08);
+
+  /* Header bar */
+  --ga-header-bg: #ffffff;
+  --ga-header-border: rgba(0, 0, 0, 0.08);
+  --ga-header-text: #202124;
+  --ga-header-text-secondary: #5f6368;
+
+  /* Legacy / fallback */
+  --bg: var(--ga-main-bg);
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #f1f3f4;
+  --text: var(--ga-main-text);
+  --text-secondary: var(--ga-main-text-secondary);
+  --border: var(--ga-main-border);
+  --border-strong: rgba(0, 0, 0, 0.12);
+  --primary: var(--ga-primary);
+  --primary-hover: var(--ga-primary-hover);
+  --focus-ring: 2px solid var(--ga-primary);
+  --focus-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-short: 0.01ms;
+    --motion-medium: 0.01ms;
+    --motion-long: 0.01ms;
+  }
+}
+
+[data-theme="dark"] {
+  --ga-main-bg: #1a1a1e;
+  --ga-main-text: #e8eaed;
+  --ga-main-text-secondary: #9aa0a6;
+  --ga-primary: #8ab4f8;
+  --ga-sidebar-bg: #252529;
+  --ga-header-bg: #252529;
+}

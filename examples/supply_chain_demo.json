@@ -1,0 +1,79 @@
+{
+  "version": "1.0",
+  "title": "Tesla Battery Supply Chain",
+  "metadata": {
+    "source": "demo",
+    "estimated_duration_seconds": 35
+  },
+  "global_style": {
+    "theme": "dark",
+    "background_color": "#1a1a2e",
+    "accent_color": "#2563EB",
+    "font_family": "sans-serif",
+    "text_color": "#ffffff"
+  },
+  "scenes": [
+    {
+      "id": "s1",
+      "scene_type": "title",
+      "duration_seconds": 4,
+      "elements": [
+        {
+          "content": "The Supply Chain of a Tesla Battery",
+          "duration_seconds": 4
+        }
+      ],
+      "narration": "The Supply Chain of a Tesla Battery"
+    },
+    {
+      "id": "s2",
+      "scene_type": "bullets",
+      "duration_seconds": 8,
+      "elements": [
+        { "content": "Raw material mining (Lithium, Cobalt, Nickel)", "duration_seconds": 2 },
+        { "content": "Refining and processing", "duration_seconds": 2 },
+        { "content": "Anode and cathode production", "duration_seconds": 2 },
+        { "content": "Cell assembly", "duration_seconds": 2 }
+      ],
+      "narration": "The supply chain spans mining to assembly."
+    },
+    {
+      "id": "s3",
+      "scene_type": "flow",
+      "duration_seconds": 6,
+      "nodes": [
+        { "id": "A", "label": "Mining" },
+        { "id": "B", "label": "Refining" },
+        { "id": "C", "label": "Assembly" },
+        { "id": "D", "label": "Testing" }
+      ],
+      "edges": [
+        { "source": "A", "target": "B" },
+        { "source": "B", "target": "C" },
+        { "source": "C", "target": "D" }
+      ],
+      "narration": "A linear flow from raw materials to tested cells."
+    },
+    {
+      "id": "s4",
+      "scene_type": "formula",
+      "duration_seconds": 5,
+      "elements": [
+        { "content": "E = \\frac{1}{2} C V^2", "duration_seconds": 3 }
+      ],
+      "narration": "Energy storage follows the capacitor equation."
+    },
+    {
+      "id": "s5",
+      "scene_type": "text",
+      "duration_seconds": 5,
+      "elements": [
+        {
+          "content": "Tesla sources materials globally: Lithium from Australia, Cobalt from DRC.",
+          "duration_seconds": 5
+        }
+      ],
+      "narration": "Tesla sources materials globally."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synapseflow-anim"
+version = "0.1.0"
+description = "SynapseFlow 2026 - Blueprint-driven Manim animation for technical visualizations"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "manim>=0.19.0",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-cov>=4.0", "pytest-mock>=3.0", "ruff"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["anim"]
+omit = ["anim/__init__.py", "anim/cli.py"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+
+[project.scripts]
+synapseflow-render = "anim.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["anim*"]
